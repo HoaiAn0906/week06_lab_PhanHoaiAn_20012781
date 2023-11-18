@@ -7,6 +7,7 @@ import iuh.fit.week06_lab_phanhoaian_20012781.repositories.UserRepository;
 import iuh.fit.week06_lab_phanhoaian_20012781.request.LoginRequest;
 import iuh.fit.week06_lab_phanhoaian_20012781.request.RegisterRequest;
 import iuh.fit.week06_lab_phanhoaian_20012781.response.AuthenticationResponse;
+import iuh.fit.week06_lab_phanhoaian_20012781.response.DataResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -65,13 +66,13 @@ public class AuthenticationService {
         saveUserToken(savedUser, jwtToken);
 
         return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
+                .token(jwtToken)
                 .tokenType("Bearer")
                 .expiresAt(java.time.Instant.now().plusMillis(jwtService.getJwtExpirationInMillis()))
                 .build();
     }
 
-    public AuthenticationResponse login(LoginRequest request) {
+    public DataResponse<AuthenticationResponse> login(LoginRequest request) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getEmail(),
                 request.getPassword()
@@ -83,10 +84,17 @@ public class AuthenticationService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
 
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
+        AuthenticationResponse authenticationResponse = AuthenticationResponse.builder()
+                .token(jwtToken)
                 .tokenType("Bearer")
                 .expiresAt(java.time.Instant.now().plusMillis(jwtService.getJwtExpirationInMillis()))
+                .user(user)
+                .build();
+
+        return DataResponse.<AuthenticationResponse>builder()
+                .data(authenticationResponse)
+                .message("Login successfully")
+                .status(200)
                 .build();
     }
 

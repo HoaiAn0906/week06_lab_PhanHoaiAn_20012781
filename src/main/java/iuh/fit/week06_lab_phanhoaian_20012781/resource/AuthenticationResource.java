@@ -2,6 +2,7 @@ package iuh.fit.week06_lab_phanhoaian_20012781.resource;
 
 import iuh.fit.week06_lab_phanhoaian_20012781.request.RegisterRequest;
 import iuh.fit.week06_lab_phanhoaian_20012781.response.AuthenticationResponse;
+import iuh.fit.week06_lab_phanhoaian_20012781.response.DataResponse;
 import iuh.fit.week06_lab_phanhoaian_20012781.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,7 @@ public class AuthenticationResource {
     };
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(
+    public ResponseEntity<DataResponse<AuthenticationResponse>> login(
             @RequestBody LoginRequest request
     ) {
         return ResponseEntity.ok(authenticationService.login(request));
